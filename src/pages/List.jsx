@@ -7,7 +7,7 @@ export default class List extends Component {
       <div>
         <Link data-testid="shopping-cart-button" to="./shoppingcart">
           <button type="button">
-            Carrinho de Compras
+            Shopping Cart
           </button>
         </Link>
         <h1 data-testid="home-initial-message">
