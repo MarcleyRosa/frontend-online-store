@@ -8,6 +8,7 @@ export default class List extends Component {
     this.state = {
       inputText: '',
       categories: [],
+      filteredProducts: [],
     };
   }
 
@@ -28,9 +29,15 @@ export default class List extends Component {
     }));
   }
 
-  fetchApi = async () => {
-    const { inputText } = this.state;
-    const returnFetch = await getProductsFromCategoryAndQuery(inputText);
+  fetchApiQuery = async (query) => {
+    const returnFetch = await getProductsFromCategoryAndQuery(query);
+    this.setState({
+      filteredProducts: returnFetch.results,
+    });
+  }
+
+  fetchApiCategories = async ({ target }) => {
+    const returnFetch = await getProductsFromCategoryAndQuery(target.value);
     this.setState({
       filteredProducts: returnFetch.results,
     });
@@ -38,7 +45,6 @@ export default class List extends Component {
 
   render() {
     const { inputText, filteredProducts, categories } = this.state;
-    console.log(filteredProducts);
     return (
       <main>
         <Link data-testid="shopping-cart-button" to="./shoppingcart">
@@ -59,7 +65,7 @@ export default class List extends Component {
         <button
           type="button"
           data-testid="query-button"
-          onClick={ this.fetchApi }
+          onClick={ this.fetchApiQuery }
         >
           Chamar API
         </button>
@@ -76,8 +82,18 @@ export default class List extends Component {
           )) : <p>Nenhum produto foi encontrado</p>}
         <form>
           { categories.map((categorie) => (
-            <label key={ categorie.id } data-testid="category" htmlFor="radio">
-              <input type="radio" name="radio" value={ categorie.name } />
+            <label
+              key={ categorie.id }
+              data-testid="category"
+              htmlFor={ categorie.id }
+            >
+              <input
+                type="radio"
+                name="radio"
+                value={ categorie.name }
+                id={ categorie.id }
+                onChange={ this.fetchApiCategories }
+              />
               { categorie.name }
             </label>
           )) }
