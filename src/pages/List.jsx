@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { getProductsFromCategoryAndQuery } from '../services/api';
+import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 
 export default class List extends Component {
   constructor() {
     super();
-
     this.state = {
       inputText: '',
+      categories: [],
     };
   }
 
-  // componentDidMount() {
-  //   this.fetchApi();
-  // }
+  componentDidMount() {
+    this.requestApi();
+  }
+
+  requestApi = async () => {
+    const requestList = await getCategories();
+    this.setState({ categories: requestList });
+  }
 
   onHandleChange = (event) => {
     const { name, value } = event.target;
@@ -32,10 +37,10 @@ export default class List extends Component {
   }
 
   render() {
-    const { inputText, filteredProducts } = this.state;
+    const { inputText, filteredProducts, categories } = this.state;
     console.log(filteredProducts);
     return (
-      <div>
+      <main>
         <Link data-testid="shopping-cart-button" to="./shoppingcart">
           <button type="button">
             Shopping Cart
@@ -69,7 +74,15 @@ export default class List extends Component {
               <h4>{ product.price }</h4>
             </section>
           )) : <p>Nenhum produto foi encontrado</p>}
-      </div>
+        <form>
+          { categories.map((categorie) => (
+            <label key={ categorie.id } data-testid="category" htmlFor="radio">
+              <input type="radio" name="radio" value={ categorie.name } />
+              { categorie.name }
+            </label>
+          )) }
+        </form>
+      </main>
     );
   }
 }
