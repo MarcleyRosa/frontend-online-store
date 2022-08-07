@@ -5,9 +5,7 @@ import { getProductFromId } from '../services/api';
 
 class ProductDetails extends Component {
   state = {
-    title: '',
-    thumbnail: '',
-    price: '',
+    product: [],
   }
 
   componentDidMount() {
@@ -18,19 +16,21 @@ class ProductDetails extends Component {
     const { match: { params: { id } } } = this.props;
     const returnFetch = await getProductFromId(id);
     this.setState({
-      title: returnFetch.title,
-      thumbnail: returnFetch.thumbnail,
-      price: returnFetch.price,
+      product: returnFetch,
     });
   }
 
   render() {
-    const { title, thumbnail, price } = this.state;
+    const { product } = this.state;
     return (
       <div>
-        <h1 data-testid="product-detail-name">{ title }</h1>
-        <img data-testid="product-detail-image" src={ thumbnail } alt={ title } />
-        <h3 data-testid="product-detail-price">{ price }</h3>
+        <h1 data-testid="product-detail-name">{ product.title }</h1>
+        <img
+          data-testid="product-detail-image"
+          src={ product.thumbnail }
+          alt={ product.title }
+        />
+        <h3 data-testid="product-detail-price">{ product.price }</h3>
         <Link to="/shoppingcart" data-testid="shopping-cart-button">
           <button type="button">
             Ir ao carrinho
