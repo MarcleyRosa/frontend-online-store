@@ -29,17 +29,24 @@ export default class List extends Component {
     }));
   }
 
-  fetchApiQuery = async (query) => {
-    const returnFetch = await getProductsFromCategoryAndQuery(query);
+  fetchQueryOrCategoryId = async () => {
+    const { inputText } = this.state;
+    if (inputText.includes('MLB')) {
+      const returnFetch = await getProductsFromCategoryAndQuery(inputText, undefined);
+      this.setState({
+        filteredProducts: returnFetch.results,
+      });
+    }
+    const returnFetch = await getProductsFromCategoryAndQuery(undefined, inputText);
     this.setState({
       filteredProducts: returnFetch.results,
     });
   }
 
-  fetchApiCategories = async ({ target }) => {
-    const returnFetch = await getProductsFromCategoryAndQuery(target.value);
+  fetchCategoryButton = async (categorie) => {
+    const fetchCategory = await getProductsFromCategoryAndQuery(categorie, undefined);
     this.setState({
-      filteredProducts: returnFetch.results,
+      filteredProducts: fetchCategory.results,
     });
   }
 
@@ -47,14 +54,16 @@ export default class List extends Component {
     const { inputText, filteredProducts, categories } = this.state;
     return (
       <main>
+        {/* botão de ir ao carrinho */}
         <Link data-testid="shopping-cart-button" to="./shoppingcart">
           <button type="button">
-            Shopping Cart
+            Ir ao carrinho
           </button>
         </Link>
         <h1 data-testid="home-initial-message">
           Digite algum termo de pesquisa ou escolha uma categoria.
         </h1>
+        {/* input de busca */}
         <input
           type="text"
           name="inputText"
@@ -62,10 +71,11 @@ export default class List extends Component {
           data-testid="query-input"
           onChange={ this.onHandleChange }
         />
+        {/* botão de busca */}
         <button
           type="button"
           data-testid="query-button"
-          onClick={ this.fetchApiQuery }
+          onClick={ () => this.fetchQueryOrCategoryId(inputText) }
         >
           Chamar API
         </button>
@@ -78,6 +88,12 @@ export default class List extends Component {
                 alt={ product.title }
               />
               <h4>{ product.price }</h4>
+              <Link
+                to={ `/product-details/${product.id}` }
+                data-testid="product-detail-link"
+              >
+                Mais detalhes sobre o produto
+              </Link>
             </section>
           )) : <p>Nenhum produto foi encontrado</p>}
         <form>
@@ -92,7 +108,7 @@ export default class List extends Component {
                 name="radio"
                 value={ categorie.name }
                 id={ categorie.id }
-                onChange={ this.fetchApiCategories }
+                onChange={ () => this.fetchCategoryButton(categorie.id) }
               />
               { categorie.name }
             </label>
