@@ -9,6 +9,7 @@ export default class List extends Component {
       inputText: '',
       categories: [],
       filteredProducts: [],
+      shoppingCart: [],
     };
   }
 
@@ -50,12 +51,26 @@ export default class List extends Component {
     });
   }
 
+  addShoppingCart = (product) => {
+    this.setState((prevState) => ({
+      shoppingCart: [...prevState.shoppingCart, product],
+    }));
+  }
+
   render() {
-    const { inputText, filteredProducts, categories } = this.state;
+    const { inputText, filteredProducts, categories, shoppingCart } = this.state;
     return (
       <main>
         {/* botão de ir ao carrinho */}
-        <Link data-testid="shopping-cart-button" to="./shoppingcart">
+        <Link
+          data-testid="shopping-cart-button"
+          to={ {
+            pathname: '/shoppingcart',
+            state: {
+              cart: [...shoppingCart],
+            },
+          } }
+        >
           <button type="button">
             Ir ao carrinho
           </button>
@@ -89,11 +104,25 @@ export default class List extends Component {
               />
               <h4>{ product.price }</h4>
               <Link
-                to={ `/product-details/${product.id}` }
+                to={ {
+                  pathname: `/product-details/${product.id}`,
+                  state: {
+                    cart: [...shoppingCart],
+                  },
+                } }
                 data-testid="product-detail-link"
               >
                 Mais detalhes sobre o produto
               </Link>
+              <br />
+              <br />
+              <button
+                type="button"
+                data-testid="product-add-to-cart"
+                onClick={ () => this.addShoppingCart(product) }
+              >
+                Adicionar ao carrinho
+              </button>
             </section>
           )) : <p>Nenhum produto foi encontrado</p>}
         <form>
