@@ -1,35 +1,34 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ProductQuantity from '../components/ProductQuantity';
 
 export default class ShoppingCart extends Component {
   state = {
-    count: 1,
-    disabled: true,
+    cart: [],
   }
 
-  increaseQuantity = () => {
-    this.setState((prevState) => ({
-      count: prevState.count + 1,
-      disabled: false,
-    }));
+  componentDidMount() {
+    this.handleCart();
   }
 
-  decreaseQuantity = () => {
-    this.setState((prevState) => ({
-      count: prevState.count - 1,
-    }), () => {
-      const { count } = this.state;
-      if (count === 1) {
-        this.setState({
-          disabled: true,
-        });
-      }
+  handleCart = () => {
+    const { location: { state: { cart } } } = this.props;
+    this.setState({
+      cart,
+    });
+  }
+
+  handleRemoveCart = (product) => {
+    console.log(product);
+    const { cart } = this.state;
+    const newCart = cart.filter((item) => item.id !== product.id);
+    this.setState({
+      cart: newCart,
     });
   }
 
   render() {
-    const { location: { state: { cart } } } = this.props;
-    const { count, disabled } = this.state;
+    const { cart } = this.state;
     return (
       <div>
         { !cart.length
@@ -38,25 +37,13 @@ export default class ShoppingCart extends Component {
           <section key={ product.id }>
             <h3 data-testid="shopping-cart-product-name">{ product.title }</h3>
             <h4>{ product.price }</h4>
-            <p
-              data-testid="shopping-cart-product-quantity"
-            >
-              { count }
-            </p>
+            <ProductQuantity />
             <button
               type="button"
-              disabled={ disabled }
-              data-testid="product-decrease-quantity"
-              onClick={ this.decreaseQuantity }
+              onClick={ () => this.handleRemoveCart(product) }
+              data-testid="remove-product"
             >
-              -
-            </button>
-            <button
-              type="button"
-              data-testid="product-increase-quantity"
-              onClick={ this.increaseQuantity }
-            >
-              +
+              Remover
             </button>
           </section>
         )) }
