@@ -1,7 +1,5 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 export default class ShoppingCart extends Component {
   // quantityProduct = ({ target }) => {
@@ -13,6 +11,7 @@ export default class ShoppingCart extends Component {
 
   render() {
     const { location: { state: { cart } } } = this.props;
+    console.log(this.props);
     // const { quantityProduct } = this.state;
     return (
       <div>
@@ -35,10 +34,10 @@ export default class ShoppingCart extends Component {
   }
 }
 
-// ShoppingCart.propTypes = {
-//   location: PropTypes.shape({
-//     state: PropTypes.shape({
-//       cart: PropTypes.arrayOf,
-//     }),
-//   }).isRequired,
-// };
+ShoppingCart.propTypes = {
+  location: PropTypes.objectOf({
+    state: PropTypes.shape({
+      cart: PropTypes.arrayOf,
+    }),
+  }).isRequired,
+};
