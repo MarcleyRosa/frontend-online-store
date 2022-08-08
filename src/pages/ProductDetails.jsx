@@ -29,6 +29,12 @@ class ProductDetails extends Component {
     });
   }
 
+  addShoppingCart = (product) => {
+    this.setState((prevState) => ({
+      cartList: [...prevState.cartList, product],
+    }));
+  }
+
   render() {
     const { product, cartList } = this.state;
     return (
@@ -40,6 +46,13 @@ class ProductDetails extends Component {
           alt={ product.title }
         />
         <h3 data-testid="product-detail-price">{ product.price }</h3>
+        <button
+          type="button"
+          data-testid="product-detail-add-to-cart"
+          onClick={ () => this.addShoppingCart(product) }
+        >
+          Adicionar ao carrinho
+        </button>
         <Link
           to={ {
             pathname: '/shoppingcart',
