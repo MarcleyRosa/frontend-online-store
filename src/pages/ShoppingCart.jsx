@@ -7,38 +7,24 @@ export default class ShoppingCart extends Component {
     disabled: true,
   }
 
-  componentDidMount() {
-    this.decreaseQuantity();
-    this.increaseQuantity();
-  }
-
   increaseQuantity = () => {
-    const { count } = this.state;
     this.setState((prevState) => ({
       count: prevState.count + 1,
+      disabled: false,
     }));
-    if (count >= 2) {
-      this.setState({
-        disabled: false,
-      });
-    }
   }
 
   decreaseQuantity = () => {
-    const { count } = this.state;
     this.setState((prevState) => ({
       count: prevState.count - 1,
-    }));
-    if (count > 1) {
-      this.setState({
-        disabled: false,
-      });
-    }
-    if (count <= 1) {
-      this.setState({
-        disabled: true,
-      });
-    }
+    }), () => {
+      const { count } = this.state;
+      if (count === 1) {
+        this.setState({
+          disabled: true,
+        });
+      }
+    });
   }
 
   render() {
