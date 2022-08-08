@@ -1,18 +1,34 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ProductQuantity from '../components/ProductQuantity';
 
 export default class ShoppingCart extends Component {
-  // quantityProduct = ({ target }) => {
-  //   console.log(target.value);
-  //   this.setState({
-  //     quantityProduct: target.value,
-  //   });
-  // }
+  state = {
+    cart: [],
+  }
+
+  componentDidMount() {
+    this.handleCart();
+  }
+
+  handleCart = () => {
+    const { location: { state: { cart } } } = this.props;
+    this.setState({
+      cart,
+    });
+  }
+
+  handleRemoveCart = (product) => {
+    console.log(product);
+    const { cart } = this.state;
+    const newCart = cart.filter((item) => item.id !== product.id);
+    this.setState({
+      cart: newCart,
+    });
+  }
 
   render() {
-    const { location: { state: { cart } } } = this.props;
-    console.log(this.props);
-    // const { quantityProduct } = this.state;
+    const { cart } = this.state;
     return (
       <div>
         { !cart.length
@@ -21,11 +37,13 @@ export default class ShoppingCart extends Component {
           <section key={ product.id }>
             <h3 data-testid="shopping-cart-product-name">{ product.title }</h3>
             <h4>{ product.price }</h4>
+            <ProductQuantity />
             <button
-              data-testid="shopping-cart-product-quantity"
               type="button"
+              onClick={ () => this.handleRemoveCart(product) }
+              data-testid="remove-product"
             >
-              1
+              Remover
             </button>
           </section>
         )) }
