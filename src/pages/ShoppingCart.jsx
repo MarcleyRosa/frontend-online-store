@@ -2,17 +2,48 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export default class ShoppingCart extends Component {
-  // quantityProduct = ({ target }) => {
-  //   console.log(target.value);
-  //   this.setState({
-  //     quantityProduct: target.value,
-  //   });
-  // }
+  state = {
+    count: 1,
+    disabled: true,
+  }
+
+  componentDidMount() {
+    this.decreaseQuantity();
+    this.increaseQuantity();
+  }
+
+  increaseQuantity = () => {
+    const { count } = this.state;
+    this.setState((prevState) => ({
+      count: prevState.count + 1,
+    }));
+    if (count >= 2) {
+      this.setState({
+        disabled: false,
+      });
+    }
+  }
+
+  decreaseQuantity = () => {
+    const { count } = this.state;
+    this.setState((prevState) => ({
+      count: prevState.count - 1,
+    }));
+    if (count > 1) {
+      this.setState({
+        disabled: false,
+      });
+    }
+    if (count <= 1) {
+      this.setState({
+        disabled: true,
+      });
+    }
+  }
 
   render() {
     const { location: { state: { cart } } } = this.props;
-    console.log(this.props);
-    // const { quantityProduct } = this.state;
+    const { count, disabled } = this.state;
     return (
       <div>
         { !cart.length
@@ -21,11 +52,25 @@ export default class ShoppingCart extends Component {
           <section key={ product.id }>
             <h3 data-testid="shopping-cart-product-name">{ product.title }</h3>
             <h4>{ product.price }</h4>
-            <button
+            <p
               data-testid="shopping-cart-product-quantity"
-              type="button"
             >
-              1
+              { count }
+            </p>
+            <button
+              type="button"
+              disabled={ disabled }
+              data-testid="product-decrease-quantity"
+              onClick={ this.decreaseQuantity }
+            >
+              -
+            </button>
+            <button
+              type="button"
+              data-testid="product-increase-quantity"
+              onClick={ this.increaseQuantity }
+            >
+              +
             </button>
           </section>
         )) }
