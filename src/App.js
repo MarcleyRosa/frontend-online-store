@@ -4,6 +4,7 @@ import './App.css';
 import List from './pages/List';
 import ShoppingCart from './pages/ShoppingCart';
 import ProductDetails from './pages/ProductDetails';
+import ShoppingCheckout from './pages/ShoppingCheckout';
 
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
             path="/product-details/:id"
             component={ ProductDetails }
           />
+          <Route exact path="/shoppingcheckout" component={ ShoppingCheckout } />
         </Switch>
       </BrowserRouter>
 
