@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ProductQuantity from '../components/ProductQuantity';
 
@@ -47,6 +48,17 @@ export default class ShoppingCart extends Component {
             </button>
           </section>
         )) }
+        <Link
+          to={ {
+            pathname: '/shoppingcheckout',
+            state: {
+              cart: [...cart],
+            },
+          } }
+          data-testid="checkout-products"
+        >
+          <button type="button">Finalizar Compra</button>
+        </Link>
       </div>
     );
   }
