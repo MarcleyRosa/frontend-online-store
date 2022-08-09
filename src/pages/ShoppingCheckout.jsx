@@ -55,6 +55,7 @@ class ShoppingCheckout extends Component {
           fullname: '',
         });
         const { history } = this.props;
+        localStorage.clear();
         history.push('/');
       });
     } else {

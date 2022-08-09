@@ -17,6 +17,11 @@ export default class List extends Component {
     this.requestApi();
   }
 
+  componentWillUnmount() {
+    const { shoppingCart } = this.state;
+    localStorage.setItem('products', JSON.stringify(shoppingCart));
+  }
+
   requestApi = async () => {
     const requestList = await getCategories();
     this.setState({ categories: requestList });

@@ -52,9 +52,9 @@ class ProductDetails extends Component {
 
   handleClickSubmit = (event) => {
     event.preventDefault();
+    console.log(event.target);
     const { email, rating, textarea } = this.state;
-    const { id } = event.target;
-    console.log(id);
+    const { match: { params: { id } } } = this.props;
     const object = { email, rating, textarea };
     const emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+/g;
     const emailValidation = emailRegex.test(email);
