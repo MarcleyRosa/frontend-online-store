@@ -1,13 +1,20 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getProductFromId } from '../services/api';
 
 class ProductDetails extends Component {
-  state = {
-    comments: JSON.parse(localStorage.getItem('Formulario')) || [],
-    product: [],
-    cartList: [],
+  constructor(props) {
+    super(props);
+
+    const { match: { params: { id } } } = this.props;
+    this.state = {
+      comments: JSON.parse(localStorage.getItem(id)) || [],
+      product: [],
+      cartList: [],
+      validEmail: true,
+    };
   }
 
   componentDidMount() {
@@ -44,19 +51,31 @@ class ProductDetails extends Component {
   };
 
   handleClickSubmit = (event) => {
-    console.log(event.target);
+    event.preventDefault();
     const { email, rating, textarea } = this.state;
+    const { id } = event.target;
+    console.log(id);
     const object = { email, rating, textarea };
-    this.setState((prevState) => ({
-      comments: [...prevState.comments, object],
-    }), () => {
-      const { comments } = this.state;
-      localStorage.setItem('Formulario', JSON.stringify(comments));
-    });
+    const emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+/g;
+    const emailValidation = emailRegex.test(email);
+    if (emailValidation && Number(rating) > 0) {
+      this.setState((prevState) => ({
+        comments: [...prevState.comments, object],
+        validEmail: emailValidation,
+      }), () => {
+        const { comments } = this.state;
+        localStorage.setItem(`${id}`, JSON.stringify(comments));
+        event.target.reset();
+      });
+    } else {
+      this.setState({
+        validEmail: false,
+      });
+    }
   };
 
   render() {
-    const { product, cartList, comments } = this.state;
+    const { product, cartList, comments, validEmail } = this.state;
     return (
       <div>
         <h1 data-testid="product-detail-name">{ product.title }</h1>
@@ -86,13 +105,14 @@ class ProductDetails extends Component {
             Ir ao carrinho
           </button>
         </Link>
-        <form>
+        <form onSubmit={ this.handleClickSubmit }>
           <input
             type="email"
             name="email"
             data-testid="product-detail-email"
             onChange={ this.handleChange }
             required
+            value={ comments.email }
           />
           <label htmlFor="radio">
             <input
@@ -152,16 +172,16 @@ class ProductDetails extends Component {
             data-testid="submit-review-btn"
             type="submit"
             id={ product.id }
-            onClick={ this.handleClickSubmit }
           >
             Avaliar
           </button>
         </form>
+        { !validEmail && <h3 data-testid="error-msg">Campos inválidos</h3> }
         { comments.map((comment, index) => (
           <section key={ index }>
-            <h1>{ comment.email }</h1>
-            <h2>{ comment.textarea }</h2>
-            <h3>{ comment.rating }</h3>
+            <h1 data-testid="review-card-email">{ comment.email }</h1>
+            <h2 data-testid="review-card-rating">{ comment.textarea }</h2>
+            <h3 data-testid="review-card-evaluation">{ comment.rating }</h3>
           </section>
         )) }
       </div>
