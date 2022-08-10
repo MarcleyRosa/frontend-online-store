@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-// import PropTypes from 'prop-types';
 import ProductQuantity from '../components/ProductQuantity';
 import { getStorage, removeProduct } from '../services/localStorageFuncs';
 
@@ -33,7 +32,7 @@ export default class ShoppingCart extends Component {
           <section key={ product.id }>
             <h3 data-testid="shopping-cart-product-name">{ product.title }</h3>
             <h4>{ product.price }</h4>
-            <ProductQuantity />
+            <ProductQuantity quantity={ product.available_quantity } />
             <button
               type="button"
               onClick={ () => this.handleRemoveCart(product) }
@@ -53,11 +52,3 @@ export default class ShoppingCart extends Component {
     );
   }
 }
-
-// ShoppingCart.propTypes = {
-//   location: PropTypes.objectOf({
-//     state: PropTypes.shape({
-//       cart: PropTypes.arrayOf,
-//     }),
-//   }).isRequired,
-// };

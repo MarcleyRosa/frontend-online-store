@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class ProductQuantity extends Component {
   state = {
@@ -7,10 +8,19 @@ class ProductQuantity extends Component {
   }
 
   increaseQuantity = () => {
-    this.setState((prevState) => ({
-      count: prevState.count + 1,
-      disabled: false,
-    }));
+    const { quantity } = this.props;
+    const { count } = this.state;
+    const MAX = quantity;
+    if (count >= MAX) {
+      this.setState({
+        disabled: true,
+      });
+    } else {
+      this.setState((prevState) => ({
+        count: prevState.count + 1,
+        disabled: false,
+      }));
+    }
   }
 
   decreaseQuantity = () => {
@@ -54,5 +64,9 @@ class ProductQuantity extends Component {
     );
   }
 }
+
+ProductQuantity.propTypes = {
+  quantity: PropTypes.string.isRequired,
+};
 
 export default ProductQuantity;
