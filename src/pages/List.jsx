@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { addProduct } from '../services/localStorageFuncs';
 
 export default class List extends Component {
   constructor() {
@@ -57,6 +58,7 @@ export default class List extends Component {
   }
 
   addShoppingCart = (product) => {
+    addProduct(product);
     this.setState((prevState) => ({
       shoppingCart: [...prevState.shoppingCart, product],
     }));

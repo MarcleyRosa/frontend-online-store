@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getProductFromId } from '../services/api';
+import { addProduct } from '../services/localStorageFuncs';
 
 class ProductDetails extends Component {
   constructor(props) {
     super(props);
 
-    const { match: { params: { id } } } = this.props;
     this.state = {
-      comments: JSON.parse(localStorage.getItem(id)) || [],
+      comments: [],
       product: [],
       cartList: [],
       validEmail: true,
@@ -19,6 +19,11 @@ class ProductDetails extends Component {
   componentDidMount() {
     this.fetchProduct();
     this.cartListProps();
+    const { match: { params: { id } } } = this.props;
+    console.log(id);
+    this.setState({
+      comments: JSON.parse(localStorage.getItem(id)) || [],
+    });
   }
 
   fetchProduct = async () => {
@@ -37,6 +42,7 @@ class ProductDetails extends Component {
   }
 
   addShoppingCart = (product) => {
+    addProduct(product);
     this.setState((prevState) => ({
       cartList: [...prevState.cartList, product],
     }));
