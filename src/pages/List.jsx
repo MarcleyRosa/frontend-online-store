@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
-import { addProduct } from '../services/localStorageFuncs';
+import { addProduct, getStorage, reduceFunc } from '../services/localStorageFuncs';
 
 export default class List extends Component {
   constructor() {
@@ -16,11 +16,9 @@ export default class List extends Component {
 
   componentDidMount() {
     this.requestApi();
-  }
-
-  componentWillUnmount() {
-    const { shoppingCart } = this.state;
-    localStorage.setItem('products', JSON.stringify(shoppingCart));
+    this.setState({
+      shoppingCart: getStorage() || [],
+    });
   }
 
   requestApi = async () => {
@@ -59,13 +57,15 @@ export default class List extends Component {
 
   addShoppingCart = (product) => {
     addProduct(product);
-    this.setState((prevState) => ({
-      shoppingCart: [...prevState.shoppingCart, product],
-    }));
+    const products = getStorage();
+    this.setState({
+      shoppingCart: products,
+    });
   }
 
   render() {
-    const { inputText, filteredProducts, categories } = this.state;
+    const { inputText, filteredProducts, categories, shoppingCart } = this.state;
+    const lengthOfProducts = reduceFunc(shoppingCart);
     return (
       <main>
         {/* botão de ir ao carrinho */}
@@ -73,9 +73,12 @@ export default class List extends Component {
           data-testid="shopping-cart-button"
           to="/shoppingcart"
         >
-          <button type="button">
-            Ir ao carrinho
-          </button>
+          <div>
+            <button type="button">
+              <h3 data-testid="shopping-cart-size">{ lengthOfProducts }</h3>
+              Ir ao carrinho
+            </button>
+          </div>
         </Link>
         <h1 data-testid="home-initial-message">
           Digite algum termo de pesquisa ou escolha uma categoria.

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getProductFromId } from '../services/api';
-import { addProduct } from '../services/localStorageFuncs';
+import { addProduct, getStorage, reduceFunc } from '../services/localStorageFuncs';
 
 class ProductDetails extends Component {
   constructor(props) {
@@ -12,6 +12,7 @@ class ProductDetails extends Component {
       comments: [],
       product: [],
       validEmail: true,
+      shoppingCart: [],
     };
   }
 
@@ -20,6 +21,9 @@ class ProductDetails extends Component {
     const { match: { params: { id } } } = this.props;
     this.setState({
       comments: JSON.parse(localStorage.getItem(id)) || [],
+    });
+    this.setState({
+      shoppingCart: getStorage() || [],
     });
   }
 
@@ -33,6 +37,10 @@ class ProductDetails extends Component {
 
   addShoppingCart = (product) => {
     addProduct(product);
+    const products = getStorage();
+    this.setState({
+      shoppingCart: products,
+    });
   }
 
   handleChange = ({ target: { name, value, type, checked } }) => {
@@ -67,7 +75,8 @@ class ProductDetails extends Component {
   };
 
   render() {
-    const { product, comments, validEmail } = this.state;
+    const { product, comments, validEmail, shoppingCart } = this.state;
+    const lengthOfProducts = reduceFunc(shoppingCart);
     return (
       <div>
         <h1 data-testid="product-detail-name">{ product.title }</h1>
@@ -88,6 +97,7 @@ class ProductDetails extends Component {
           to="/shoppingcart"
           data-testid="shopping-cart-button"
         >
+          <h3 data-testid="shopping-cart-size">{ lengthOfProducts }</h3>
           <button type="button">
             Ir ao carrinho
           </button>

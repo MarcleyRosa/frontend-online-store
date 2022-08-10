@@ -35,8 +35,15 @@ function removeProduct(id) {
   modifyStorage(products.filter((product) => product.id !== id));
 }
 
+function reduceFunc(array) {
+  return array.reduce((acc, curr) => (
+    acc + curr.length
+  ), 0);
+}
+
 export {
   getStorage,
   addProduct,
   removeProduct,
+  reduceFunc,
 };
