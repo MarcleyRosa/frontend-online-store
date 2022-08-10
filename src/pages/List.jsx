@@ -108,6 +108,8 @@ export default class List extends Component {
                 alt={ product.title }
               />
               <h4>{ product.price }</h4>
+              {product.shipping.free_shipping
+              && <h3 data-testid="free-shipping">frete gratis</h3>}
               <Link
                 to={ `/product-details/${product.id}` }
                 data-testid="product-detail-link"
