@@ -30,7 +30,13 @@ function addProduct(product) {
   modifyStorage([...products, { ...product, length: 1 }]);
 }
 
+function removeProduct(id) {
+  const products = catchStorage();
+  modifyStorage(products.filter((product) => product.id !== id));
+}
+
 export {
   getStorage,
   addProduct,
+  removeProduct,
 };

@@ -11,16 +11,13 @@ class ProductDetails extends Component {
     this.state = {
       comments: [],
       product: [],
-      cartList: [],
       validEmail: true,
     };
   }
 
   componentDidMount() {
     this.fetchProduct();
-    this.cartListProps();
     const { match: { params: { id } } } = this.props;
-    console.log(id);
     this.setState({
       comments: JSON.parse(localStorage.getItem(id)) || [],
     });
@@ -34,18 +31,8 @@ class ProductDetails extends Component {
     });
   }
 
-  cartListProps = () => {
-    const { location: { state: { cart } } } = this.props;
-    this.setState({
-      cartList: cart,
-    });
-  }
-
   addShoppingCart = (product) => {
     addProduct(product);
-    this.setState((prevState) => ({
-      cartList: [...prevState.cartList, product],
-    }));
   }
 
   handleChange = ({ target: { name, value, type, checked } }) => {
@@ -80,7 +67,7 @@ class ProductDetails extends Component {
   };
 
   render() {
-    const { product, cartList, comments, validEmail } = this.state;
+    const { product, comments, validEmail } = this.state;
     return (
       <div>
         <h1 data-testid="product-detail-name">{ product.title }</h1>
@@ -98,12 +85,7 @@ class ProductDetails extends Component {
           Adicionar ao carrinho
         </button>
         <Link
-          to={ {
-            pathname: '/shoppingcart',
-            state: {
-              cart: [...cartList],
-            },
-          } }
+          to="/shoppingcart"
           data-testid="shopping-cart-button"
         >
           <button type="button">

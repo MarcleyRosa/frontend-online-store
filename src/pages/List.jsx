@@ -65,18 +65,13 @@ export default class List extends Component {
   }
 
   render() {
-    const { inputText, filteredProducts, categories, shoppingCart } = this.state;
+    const { inputText, filteredProducts, categories } = this.state;
     return (
       <main>
         {/* botão de ir ao carrinho */}
         <Link
           data-testid="shopping-cart-button"
-          to={ {
-            pathname: '/shoppingcart',
-            state: {
-              cart: [...shoppingCart],
-            },
-          } }
+          to="/shoppingcart"
         >
           <button type="button">
             Ir ao carrinho
@@ -111,12 +106,7 @@ export default class List extends Component {
               />
               <h4>{ product.price }</h4>
               <Link
-                to={ {
-                  pathname: `/product-details/${product.id}`,
-                  state: {
-                    cart: [...shoppingCart],
-                  },
-                } }
+                to={ `/product-details/${product.id}` }
                 data-testid="product-detail-link"
               >
                 Mais detalhes sobre o produto
