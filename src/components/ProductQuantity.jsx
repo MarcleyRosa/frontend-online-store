@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 
 class ProductQuantity extends Component {
@@ -7,10 +8,19 @@ class ProductQuantity extends Component {
   }
 
   increaseQuantity = () => {
-    this.setState((prevState) => ({
-      count: prevState.count + 1,
-      disabled: false,
-    }));
+    const { quantity } = this.props;
+    const { count } = this.state;
+    const MAX = quantity;
+    if (count >= MAX) {
+      this.setState({
+        disabled: true,
+      });
+    } else {
+      this.setState((prevState) => ({
+        count: prevState.count + 1,
+        disabled: false,
+      }));
+    }
   }
 
   decreaseQuantity = () => {
