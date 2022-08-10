@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-// import PropTypes from 'prop-types';
 import ProductQuantity from '../components/ProductQuantity';
 import { getStorage, removeProduct } from '../services/localStorageFuncs';
 

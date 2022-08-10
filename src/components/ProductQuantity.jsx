@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class ProductQuantity extends Component {
   state = {
@@ -64,5 +64,9 @@ class ProductQuantity extends Component {
     );
   }
 }
+
+ProductQuantity.propTypes = {
+  quantity: PropTypes.string.isRequired,
+};
 
 export default ProductQuantity;
