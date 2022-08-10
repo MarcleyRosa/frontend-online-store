@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { getStorage } from '../services/localStorageFuncs';
 
 class ShoppingCheckout extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      cart: [],
       validEmail: true,
       address: '',
       fullname: '',
@@ -15,6 +17,12 @@ class ShoppingCheckout extends Component {
       cep: '',
       payment: '',
     };
+  }
+
+  componentDidMount() {
+    this.setState({
+      cart: getStorage() || [],
+    });
   }
 
   handleChange = ({ target: { name, value } }) => {
@@ -42,8 +50,6 @@ class ShoppingCheckout extends Component {
       this.setState({
         validEmail: emailValidation,
       }, () => {
-        // const { comments } = this.state;
-        // localStorage.setItem(`${id}`, JSON.stringify(comments));
         event.target.reset();
         this.setState({
           email: '',
@@ -55,6 +61,7 @@ class ShoppingCheckout extends Component {
           fullname: '',
         });
         const { history } = this.props;
+        localStorage.setItem('storaged-products', []);
         history.push('/');
       });
     } else {
@@ -65,7 +72,7 @@ class ShoppingCheckout extends Component {
   };
 
   render() {
-    const { location: { state: { cart } } } = this.props;
+    const { cart } = this.state;
     const { validEmail, email, fullname, cep, cpf, phone, address } = this.state;
     return (
       <section>
@@ -175,11 +182,6 @@ class ShoppingCheckout extends Component {
 
 ShoppingCheckout.propTypes = {
   history: PropTypes.arrayOf().isRequired,
-  location: PropTypes.shape({
-    state: PropTypes.shape({
-      cart: PropTypes.arrayOf,
-    }),
-  }).isRequired,
 };
 
 export default ShoppingCheckout;

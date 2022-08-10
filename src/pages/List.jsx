@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
+import { addProduct, getStorage, reduceFunc } from '../services/localStorageFuncs';
 
 export default class List extends Component {
   constructor() {
@@ -15,6 +16,9 @@ export default class List extends Component {
 
   componentDidMount() {
     this.requestApi();
+    this.setState({
+      shoppingCart: getStorage() || [],
+    });
   }
 
   requestApi = async () => {
@@ -52,28 +56,29 @@ export default class List extends Component {
   }
 
   addShoppingCart = (product) => {
-    this.setState((prevState) => ({
-      shoppingCart: [...prevState.shoppingCart, product],
-    }));
+    addProduct(product);
+    const products = getStorage();
+    this.setState({
+      shoppingCart: products,
+    });
   }
 
   render() {
     const { inputText, filteredProducts, categories, shoppingCart } = this.state;
+    const lengthOfProducts = reduceFunc(shoppingCart);
     return (
       <main>
         {/* botão de ir ao carrinho */}
         <Link
           data-testid="shopping-cart-button"
-          to={ {
-            pathname: '/shoppingcart',
-            state: {
-              cart: [...shoppingCart],
-            },
-          } }
+          to="/shoppingcart"
         >
-          <button type="button">
-            Ir ao carrinho
-          </button>
+          <div>
+            <button type="button">
+              <h3 data-testid="shopping-cart-size">{ lengthOfProducts }</h3>
+              Ir ao carrinho
+            </button>
+          </div>
         </Link>
         <h1 data-testid="home-initial-message">
           Digite algum termo de pesquisa ou escolha uma categoria.
@@ -104,12 +109,7 @@ export default class List extends Component {
               />
               <h4>{ product.price }</h4>
               <Link
-                to={ {
-                  pathname: `/product-details/${product.id}`,
-                  state: {
-                    cart: [...shoppingCart],
-                  },
-                } }
+                to={ `/product-details/${product.id}` }
                 data-testid="product-detail-link"
               >
                 Mais detalhes sobre o produto

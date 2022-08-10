@@ -1,25 +1,30 @@
-/* eslint-disable react/prop-types */
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getProductFromId } from '../services/api';
+import { addProduct, getStorage, reduceFunc } from '../services/localStorageFuncs';
 
 class ProductDetails extends Component {
   constructor(props) {
     super(props);
 
-    const { match: { params: { id } } } = this.props;
     this.state = {
-      comments: JSON.parse(localStorage.getItem(id)) || [],
+      comments: [],
       product: [],
-      cartList: [],
       validEmail: true,
+      shoppingCart: [],
     };
   }
 
   componentDidMount() {
     this.fetchProduct();
-    this.cartListProps();
+    const { match: { params: { id } } } = this.props;
+    this.setState({
+      comments: JSON.parse(localStorage.getItem(id)) || [],
+    });
+    this.setState({
+      shoppingCart: getStorage() || [],
+    });
   }
 
   fetchProduct = async () => {
@@ -30,17 +35,12 @@ class ProductDetails extends Component {
     });
   }
 
-  cartListProps = () => {
-    const { location: { state: { cart } } } = this.props;
-    this.setState({
-      cartList: cart,
-    });
-  }
-
   addShoppingCart = (product) => {
-    this.setState((prevState) => ({
-      cartList: [...prevState.cartList, product],
-    }));
+    addProduct(product);
+    const products = getStorage();
+    this.setState({
+      shoppingCart: products,
+    });
   }
 
   handleChange = ({ target: { name, value, type, checked } }) => {
@@ -52,9 +52,9 @@ class ProductDetails extends Component {
 
   handleClickSubmit = (event) => {
     event.preventDefault();
+    console.log(event.target);
     const { email, rating, textarea } = this.state;
-    const { id } = event.target;
-    console.log(id);
+    const { match: { params: { id } } } = this.props;
     const object = { email, rating, textarea };
     const emailRegex = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+/g;
     const emailValidation = emailRegex.test(email);
@@ -75,7 +75,8 @@ class ProductDetails extends Component {
   };
 
   render() {
-    const { product, cartList, comments, validEmail } = this.state;
+    const { product, comments, validEmail, shoppingCart } = this.state;
+    const lengthOfProducts = reduceFunc(shoppingCart);
     return (
       <div>
         <h1 data-testid="product-detail-name">{ product.title }</h1>
@@ -93,14 +94,10 @@ class ProductDetails extends Component {
           Adicionar ao carrinho
         </button>
         <Link
-          to={ {
-            pathname: '/shoppingcart',
-            state: {
-              cart: [...cartList],
-            },
-          } }
+          to="/shoppingcart"
           data-testid="shopping-cart-button"
         >
+          <h3 data-testid="shopping-cart-size">{ lengthOfProducts }</h3>
           <button type="button">
             Ir ao carrinho
           </button>

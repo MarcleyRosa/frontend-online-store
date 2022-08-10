@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import ProductQuantity from '../components/ProductQuantity';
+import { getStorage, removeProduct } from '../services/localStorageFuncs';
 
 export default class ShoppingCart extends Component {
   state = {
@@ -9,22 +10,16 @@ export default class ShoppingCart extends Component {
   }
 
   componentDidMount() {
-    this.handleCart();
-  }
-
-  handleCart = () => {
-    const { location: { state: { cart } } } = this.props;
     this.setState({
-      cart,
+      cart: getStorage() || [],
     });
   }
 
   handleRemoveCart = (product) => {
-    console.log(product);
-    const { cart } = this.state;
-    const newCart = cart.filter((item) => item.id !== product.id);
+    removeProduct(product.id);
+    const products = getStorage();
     this.setState({
-      cart: newCart,
+      cart: products,
     });
   }
 
@@ -49,12 +44,7 @@ export default class ShoppingCart extends Component {
           </section>
         )) }
         <Link
-          to={ {
-            pathname: '/shoppingcheckout',
-            state: {
-              cart: [...cart],
-            },
-          } }
+          to="/shoppingcheckout"
           data-testid="checkout-products"
         >
           <button type="button">Finalizar Compra</button>
@@ -64,10 +54,10 @@ export default class ShoppingCart extends Component {
   }
 }
 
-ShoppingCart.propTypes = {
-  location: PropTypes.objectOf({
-    state: PropTypes.shape({
-      cart: PropTypes.arrayOf,
-    }),
-  }).isRequired,
-};
+// ShoppingCart.propTypes = {
+//   location: PropTypes.objectOf({
+//     state: PropTypes.shape({
+//       cart: PropTypes.arrayOf,
+//     }),
+//   }).isRequired,
+// };
